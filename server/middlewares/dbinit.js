@@ -15,4 +15,14 @@ mongoose.connection.on('error', (err) => {
     process.exit(2);
 });
 
+mongoose.connection.collections['users'].drop()
+    .then(() => {
+        console.info('dropping users')
+    });
+
+mongoose.connection.collections['rooms'].drop()
+    .then(() => {
+        console.info('dropping rooms')
+    });
+
 module.exports = mongoose.connection;
