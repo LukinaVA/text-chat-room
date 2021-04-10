@@ -8,6 +8,7 @@ async function createRoom(req, res) {
         url: url,
         users: users
     });
+    // res.status(301).redirect(`http://localhost:3000/rooms/${url}`)
     res.statusCode = 200;
     res.json({url: `/rooms/${url}`});
     res.end();
