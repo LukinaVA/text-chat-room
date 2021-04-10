@@ -1,14 +1,14 @@
 import React from 'react';
-import axios from 'axios';
+//import socket from '../../socket';
 
 const JoinPage = () => {
     const [userName, setUserName] = React.useState('');
 
-    const joinNewChat = async () => {
+    const joinNewChat = () => {
         if (!userName) {
             return alert('Enter your name, please :)');
         }
-        await axios.get('/rooms/create-new-room');
+        //socket.emit('test');
     };
 
     return (
