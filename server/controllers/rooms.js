@@ -8,9 +8,9 @@ async function createRoom(req, res) {
         url: url,
         users: users
     });
-    // res.status(301).redirect(`http://localhost:3000/rooms/${url}`)
+    // res.status(301).redirect(`http://192.168.1.43:3000/rooms/${url}`);
     res.statusCode = 200;
-    res.json({url: `/rooms/${url}`});
+    res.write(url);
     res.end();
 }
 
