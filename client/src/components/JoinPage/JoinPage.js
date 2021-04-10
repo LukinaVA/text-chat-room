@@ -1,14 +1,29 @@
 import React from 'react';
-//import socket from '../../socket';
+import socket from '../../socket';
+import axios from 'axios';
 
-const JoinPage = () => {
+const JoinPage = ({onJoin}) => {
     const [userName, setUserName] = React.useState('');
 
-    const joinNewChat = () => {
+    const joinNewChat = async () => {
         if (!userName) {
             return alert('Enter your name, please :)');
         }
-        //socket.emit('test');
+        console.log(document.location.pathname.split('/')[1])
+        const roomId = document.location.pathname.split('/')[1] === '' ? (
+                (await axios.get('http://localhost:9095')).data
+            ) : (document.location.pathname.split('/')[2]);
+
+        console.log(roomId);
+
+        const obj = {
+            userName,
+            roomId
+        };
+
+        onJoin(obj);
+
+        socket.emit('room', obj);
     };
 
     return (
