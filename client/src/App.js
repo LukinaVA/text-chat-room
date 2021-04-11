@@ -15,7 +15,7 @@ function App() {
         roomId: null,
         userName: null,
         users: [],
-        messages: [],
+        messages: []
     });
 
     const onJoin = (obj) => {
@@ -37,6 +37,7 @@ function App() {
             type: 'ADD_MESSAGE',
             payload: message,
         });
+        console.log(message.from);
     };
 
     useEffect(() => {
