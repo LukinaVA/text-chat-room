@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
     socket.on('NEW_MESSAGE', async ({ roomId, userName, text }) => {
         const time = new Date();
         const message = {
-            userName,
+            from: userName,
             time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
             text
         };
