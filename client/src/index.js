@@ -4,12 +4,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import App from './App';
 
-// const newUrl = get(localhost:9095)
 ReactDOM.render(
   <React.StrictMode>
     <Router>
         <App />
-
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

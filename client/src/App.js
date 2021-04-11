@@ -1,10 +1,12 @@
 import React, {useReducer, useEffect} from 'react';
+import {Route, Switch} from 'react-router';
 
 import reducer from './reducer';
 import JoinPage from './components/JoinPage/JoinPage';
 import ChatRoom from './components/ChatRoom/ChatRoom';
-import axios from 'axios';
-import {Route, Switch} from 'react-router';
+
+import './styles.scss';
+
 import socket from './socket';
 
 function App() {
