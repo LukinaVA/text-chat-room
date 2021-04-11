@@ -11,22 +11,28 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
         messagesRef.current.scrollTo(0, 99999);
     }, [ messages ]);
 
+    useEffect(() => {
+        document.querySelector('.messenger__textarea').focus();
+    }, [ messageValue ]);
+
     const sendMessage = () => {
         const message = {
             roomId: getRoomId(),
             userName,
             text: messageValue
         };
-        setMessageValue('');
         socket.emit('NEW_MESSAGE', message);
 
         const time = new Date();
         const my_message = {
             from: 'Me',
-            time: `${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }`,
+            time,
             text: messageValue
         };
         addMessage(my_message);
+
+        document.querySelector('.messenger__textarea').innerHTML = '';
+        setMessageValue('');
     };
 
     const getRoomId = () => {
@@ -40,6 +46,15 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
         document.execCommand('copy');
     };
 
+    const handleKeyDown = (e) => {
+        if (e.code === 'Enter') {
+            if (!/^\s*$/.test(messageValue) && !e.shiftKey) {
+                sendMessage();
+            }
+            e.preventDefault();
+        }
+    };
+
     return (
         <div className='chat-room'>
             <div className='chat-room__users'>
@@ -51,6 +66,7 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
                 </ul>
                 <div className='chat-room__join'>
                     <input
+                        readOnly
                         className='chat-room__link'
                         value={ 'http://' + document.location.host + '/rooms/' + getRoomId() }
                     />
@@ -60,7 +76,7 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
             <div className='chat-room__messenger messenger'>
                 <div ref={ messagesRef } className='messenger__messages'>
                     {messages.map((message) => (
-                        <div className={ message.from === 'Me' ? 'message message_mine' : 'message' }>
+                        <div key={message.time + Math.random()} className={ message.from === 'Me' ? 'message message_mine' : 'message' }>
                             <div className='message__text'>
                                 { message.text }
                             </div>
@@ -71,13 +87,11 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
                     ))}
                 </div>
                 <form className='messenger__new-message'>
-                    <textarea
-                        autoFocus
-                        value={ messageValue }
+                    <div
+                        contentEditable={true}
                         className='messenger__textarea'
-                        onChange={ (e) => setMessageValue(e.target.value) }
-                        onKeyDown={ (e) => e.code === 'Enter' && sendMessage() }
-                        rows='3'
+                        onInput={ (e) => setMessageValue(e.target.textContent) }
+                        onKeyDown={ handleKeyDown }
                     />
                     <button className='messenger__btn btn' onClick={ sendMessage } type='button'>Send Message</button>
                 </form>

@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect } from 'react';
-import { Route, Switch } from 'react-router';
+import React, {useReducer, useEffect} from 'react';
+import {Route, Switch} from 'react-router';
 
 import reducer from './reducer';
 import JoinPage from './components/JoinPage/JoinPage';
@@ -10,7 +10,7 @@ import socket from './socket';
 import './styles.scss';
 
 function App() {
-    const [ appState, dispatch ] = useReducer(reducer, {
+    const [appState, dispatch] = useReducer(reducer, {
         joined: false,
         roomId: null,
         userName: null,
@@ -33,11 +33,12 @@ function App() {
     };
 
     const addMessage = (message) => {
+        const time = new Date(message.time);
+        message.time = `${ time.getHours()}:${time.getMinutes()}:${time.getSeconds() }`;
         dispatch({
             type: 'ADD_MESSAGE',
             payload: message,
         });
-        console.log(message.from);
     };
 
     useEffect(() => {
@@ -53,7 +54,7 @@ function App() {
             <Switch>
                 <Route path='/' render={() => {
                     return !appState.joined ? (
-                        <JoinPage />
+                        <JoinPage/>
                     ) : (
                         <ChatRoom {...appState} addMessage={addMessage}/>
                     );
