@@ -2,16 +2,11 @@ const cors = require('cors');
 
 const app = require('./app');
 const config = require('./config/config');
-const Room = require('./models/Room')
-const {User, userSchema} = require('./models/User')
+const Room = require('./models/Room');
+const { User } = require('./models/User');
 
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-    }
-});
+const io = require('socket.io')(server, cors());
 
 io.on('connection', (socket) => {
     console.info('user connected');
@@ -20,8 +15,8 @@ io.on('connection', (socket) => {
         if (room === null) {
             socket.emit('SERVER:INVALID_ROOM');
         } else {
-            const tmp = await User.findOne({name: userName}).exec()
-            if (tmp === null) {
+            const roomUser = await Room.findOne({ 'roomId': roomId, 'users.name': userName }).exec();
+            if (roomUser === null) {
                 socket.join(roomId);
                 const createdUser = await User.create({ name: userName, socketId: socket.id });
                 room.users.push(createdUser);
@@ -43,16 +38,17 @@ io.on('connection', (socket) => {
         socket.broadcast.to(roomId).emit('SERVER:ADD_MESSAGE', obj);
     })
     socket.on('disconnect', async () => {
-        console.log('bye bye')
-        const user = await User.findOne({socketId: socket.id}).exec()
+        console.log('bye bye');
+        const user = await User.findOne({ socketId: socket.id }).exec();
         if (user !== null) {
-            const room = await Room.findOne({'users.name': user.name}).exec()
+            const room = await Room.findOne({ 'users.name': user.name }).exec();
             let index = room.users.indexOf(room.users.find((currUser) => currUser.name === user.name));
             if (index > -1) {
                 room.users.splice(index, 1);
             }
-            await room.save()
-            io.to(room.url).emit('setUsers', room.users)
+            await room.save();
+            await User.deleteOne({'socketId': socket.id}).exec();
+            io.to(room.roomId).emit('SERVER:SET_USERS', room.users);
         }
     })
 });

@@ -1,11 +1,11 @@
-const generateUrl = require('../utils/util')
-const Room = require('../models/Room')
+const generateUrl = require('../utils/util');
+const Room = require('../models/Room');
 
 async function createRoom(req, res) {
     const users = [];
     const url = generateUrl(10);
     await Room.create({
-        url: url,
+        roomId: url,
         users: users
     });
     res.statusCode = 200;
