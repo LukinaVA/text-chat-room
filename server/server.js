@@ -1,12 +1,21 @@
 const cors = require('cors');
+const { ExpressPeerServer } = require('peer');
 
 const app = require('./app');
 const config = require('./config/config');
 const Room = require('./models/Room');
 const { User } = require('./models/User');
 
+
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, cors());
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*'
+    }
+});
+
+const peerServer = ExpressPeerServer(server);
+app.use("/peerjs", peerServer);
 
 io.on('connection', (socket) => {
     console.info('user connected');
