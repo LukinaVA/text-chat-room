@@ -1,15 +1,15 @@
-const generateUrl = require('../utils/util');
 const Room = require('../models/Room');
+const generateRoomId = require('../utils/util');
 
 async function createRoom(req, res) {
     const users = [];
-    const url = generateUrl(10);
+    const roomId = generateRoomId(10);
     await Room.create({
-        roomId: url,
-        users: users
+        roomId,
+        users
     });
     res.statusCode = 200;
-    res.write(url);
+    res.write(roomId);
     res.end();
 }
 

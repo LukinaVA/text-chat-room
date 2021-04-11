@@ -1,4 +1,4 @@
-function generateUrl(length) {
+function generateRoomId(length) {
     let result = [];
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength = characters.length;
@@ -9,4 +9,4 @@ function generateUrl(length) {
     return result.join('');
 }
 
-module.exports = generateUrl;
+module.exports = generateRoomId;

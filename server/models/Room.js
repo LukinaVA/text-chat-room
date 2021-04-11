@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {userSchema} = require('../models/User');
+const { userSchema } = require('../models/User');
 
 const roomSchema = new mongoose.Schema({
     roomId: String,

@@ -10,7 +10,7 @@ const io = require('socket.io')(server, cors());
 
 io.on('connection', (socket) => {
     console.info('user connected');
-    socket.on('ROOM_JOIN', async ({ userName, roomId }) => {
+    socket.on('JOIN__ROOM', async ({ roomId, userName }) => {
         const room = await Room.findOne({ roomId: roomId }).exec();
         if (room === null) {
             socket.emit('SERVER:INVALID_ROOM');
@@ -21,36 +21,36 @@ io.on('connection', (socket) => {
                 const createdUser = await User.create({ name: userName, socketId: socket.id });
                 room.users.push(createdUser);
                 await room.save();
-                socket.emit('SERVER:ALLOW_JOIN', { roomId, userName })
+                socket.emit('SERVER:ALLOW_JOIN', { roomId, userName });
                 io.to(room.roomId).emit('SERVER:SET_USERS', room.users);
             } else {
-                socket.emit('SERVER:USER_EXISTS')
+                socket.emit('SERVER:USER_EXISTS');
             }
         }
     });
     socket.on('NEW_MESSAGE', async ({ roomId, userName, text }) => {
         const time = new Date();
-        const obj = {
+        const message = {
             userName,
             time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
             text
         };
-        socket.broadcast.to(roomId).emit('SERVER:ADD_MESSAGE', obj);
-    })
+        socket.broadcast.to(roomId).emit('SERVER:ADD_MESSAGE', message);
+    });
     socket.on('disconnect', async () => {
-        console.log('bye bye');
+        console.log('bye bye :)');
         const user = await User.findOne({ socketId: socket.id }).exec();
         if (user !== null) {
-            const room = await Room.findOne({ 'users.name': user.name }).exec();
+            const room = await Room.findOne({ 'users.socketId': socket.id }).exec();
             let index = room.users.indexOf(room.users.find((currUser) => currUser.name === user.name));
             if (index > -1) {
                 room.users.splice(index, 1);
             }
             await room.save();
-            await User.deleteOne({'socketId': socket.id}).exec();
+            await User.deleteOne({ 'socketId': socket.id }).exec();
             io.to(room.roomId).emit('SERVER:SET_USERS', room.users);
         }
-    })
+    });
 });
 
 server.listen(config.get('port'), () => {
