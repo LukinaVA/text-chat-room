@@ -49,6 +49,7 @@ io.on('connection', (socket) => {
                 room.users.splice(index, 1);
             }
             await room.save();
+            socket.leave(room.roomId);
             await User.deleteOne({ 'socketId': socket.id }).exec();
             io.to(room.roomId).emit('SERVER:SET_USERS', room.users);
         }

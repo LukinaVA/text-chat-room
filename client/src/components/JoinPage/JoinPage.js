@@ -13,9 +13,9 @@ const JoinPage = () => {
             return alert('Enter your name, please :)');
         }
 
-        const roomId = document.location.pathname.split('/')[1] === '' ? (
-                (await axios.get('http://localhost:9095')).data
-            ) : (document.location.pathname.split('/')[2]);
+        const roomId = document.location.pathname.split('/')[1] === '' ?
+            ((await axios.get('http://chat.lukina.me:9095/createRoom')).data) :
+            (document.location.pathname.split('/')[2]);
 
         const obj = {
             userName,
