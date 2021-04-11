@@ -1,11 +1,12 @@
-import React from 'react';
-import socket from '../../socket';
+import React, { useState } from 'react';
 import axios from 'axios';
+
+import socket from '../../socket';
 
 import './joinPage.scss'
 
-const JoinPage = ({onJoin}) => {
-    const [userName, setUserName] = React.useState('');
+const JoinPage = () => {
+    const [ userName, setUserName ] = useState('');
 
     const joinNewChat = async () => {
         if (!userName) {
@@ -21,27 +22,27 @@ const JoinPage = ({onJoin}) => {
             roomId
         };
 
-        onJoin(obj);
-
-        socket.emit('room', obj);
+        socket.emit('ROOM_JOIN', obj);
+        setUserName('');
     };
 
     return (
         <div className='join-page'>
             <h1 className='join-page__title'>Welcome to Chat Room</h1>
-            <label htmlFor='userName' className='join-page__label'>Enter your name: </label>
+            <label htmlFor='userName' className='join-page__label'>Enter your name:</label>
             <input
                 autoFocus
                 id='userName'
-                className='join-page__user-name'
                 type='text'
                 maxLength='20'
                 placeholder='Name'
+
                 value={userName}
+                className='join-page__user-name'
                 onChange={(e) => setUserName(e.target.value)}
                 onKeyDown={(e) => e.code === 'Enter' && joinNewChat()}
             />
-            <button className='join-page__bth btn' onClick={joinNewChat}>Join New Chat Room</button>
+            <button className='join-page__bth btn' onClick={ joinNewChat }>Join New Chat Room</button>
         </div>
     );
 }

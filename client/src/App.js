@@ -5,12 +5,12 @@ import reducer from './reducer';
 import JoinPage from './components/JoinPage/JoinPage';
 import ChatRoom from './components/ChatRoom/ChatRoom';
 
-import './styles.scss';
-
 import socket from './socket';
 
+import './styles.scss';
+
 function App() {
-    const [state, dispatch] = useReducer(reducer, {
+    const [appState, dispatch] = useReducer(reducer, {
         joined: false,
         roomId: null,
         userName: null,
@@ -25,13 +25,6 @@ function App() {
         });
     };
 
-    const addMessage = (obj) => {
-        dispatch({
-            type: 'ADD_MESSAGE',
-            payload: obj,
-        });
-    };
-
     const setUsers = (users) => {
         dispatch({
             type: 'SET_USERS',
@@ -39,22 +32,29 @@ function App() {
         });
     };
 
-    useEffect(() => {
-        socket.on('setUsers', setUsers);
-        socket.on('message', addMessage);
-        socket.on('alreadyTaken', () => {
-            alert('Name is already taken');
+    const addMessage = (message) => {
+        dispatch({
+            type: 'ADD_MESSAGE',
+            payload: message,
         });
+    };
+
+    useEffect(() => {
+        socket.on('SERVER:ALLOW_JOIN', onJoin);
+        socket.on('SERVER:SET_USERS', setUsers);
+        socket.on('SERVER:ADD_MESSAGE', addMessage);
+        socket.on('SERVER:USER_EXISTS', () => alert('Name is already taken :('));
+        socket.on('SERVER:INVALID_ROOM', () => alert('Invalid invite link :('));
     }, []);
 
     return (
         <div className='app'>
             <Switch>
                 <Route path='/' render={() => {
-                    return !state.joined ? (
-                        <JoinPage onJoin={onJoin}/>
+                    return !appState.joined ? (
+                        <JoinPage />
                     ) : (
-                        <ChatRoom {...state} addMessage={addMessage}/>
+                        <ChatRoom {...appState} addMessage={addMessage}/>
                     );
                 }}/>
             </Switch>

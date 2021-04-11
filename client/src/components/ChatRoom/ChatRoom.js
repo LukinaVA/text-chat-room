@@ -1,24 +1,24 @@
-import React, {useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import socket from '../../socket';
 
 import './chatRoom.scss';
 
-const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
-    const [messageValue, setMessageValue] = React.useState('');
+const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
+    const [ messageValue, setMessageValue ] = useState('');
     const messagesRef = useRef(null);
 
     useEffect(() => {
         messagesRef.current.scrollTo(0, 99999);
-    }, [messages]);
+    }, [ messages ]);
 
     const sendMessage = () => {
         const message = {
             roomId: getRoomId(),
-            from: userName,
+            userName,
             text: messageValue
         };
         setMessageValue('');
-        socket.emit('message', message);
+        socket.emit('NEW_MESSAGE', message);
 
         const time = new Date();
         const my_message = {
@@ -30,9 +30,10 @@ const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
     };
 
     const getRoomId = () => {
-        return roomId = document.location.pathname.split('/')[1] === '' ? (roomId) :
+        return roomId = document.location.pathname.split('/')[1] === '' ?
+            (roomId) :
             (document.location.pathname.split('/')[2]);
-    }
+    };
 
     const copyLink = () => {
         document.querySelector('.chat-room__link').select();
@@ -41,7 +42,6 @@ const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
 
     return (
         <div className='chat-room'>
-
             <div className='chat-room__users'>
                 <span className='chat-room__num'>Online ({users.length})</span>
                 <ul className='chat-room__list'>
@@ -50,11 +50,13 @@ const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
                     ))}
                 </ul>
                 <div className='chat-room__join'>
-                    <input className='chat-room__link' value={'http://' + document.location.host + '/rooms/' + getRoomId()}/>
+                    <input
+                        className='chat-room__link'
+                        value={'http://' + document.location.host + '/rooms/' + getRoomId()}
+                    />
                     <button onClick={copyLink} className='chat-room__btn btn'>Copy invite link</button>
                 </div>
             </div>
-
             <div className='chat-room__messenger messenger'>
                 <div ref={messagesRef} className='messenger__messages'>
                     {messages.map((message) => (
@@ -71,8 +73,8 @@ const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
                 <form className='messenger__new-message'>
                     <textarea
                         autoFocus
-                        className='messenger__textarea'
                         value={messageValue}
+                        className='messenger__textarea'
                         onChange={(e) => setMessageValue(e.target.value)}
                         onKeyDown={(e) => e.code === 'Enter' && sendMessage()}
                         rows='3'
