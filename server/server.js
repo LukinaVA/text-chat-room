@@ -1,3 +1,5 @@
+const cors = require('cors');
+
 const app = require('./app');
 const config = require('./config/config');
 const Room = require('./models/Room')
@@ -13,31 +15,32 @@ const io = require('socket.io')(server, {
 
 io.on('connection', (socket) => {
     console.info('user connected');
-    socket.on('room', async ({userName, roomId}) => {
-        const room = await Room.findOne({url: roomId}).exec();
+    socket.on('ROOM_JOIN', async ({ userName, roomId }) => {
+        const room = await Room.findOne({ roomId: roomId }).exec();
         if (room === null) {
-            socket.emit('invalidRoom');
+            socket.emit('SERVER:INVALID_ROOM');
         } else {
             const tmp = await User.findOne({name: userName}).exec()
             if (tmp === null) {
                 socket.join(roomId);
-                const createdUser = await User.create({name: userName, socketId: socket.id});
+                const createdUser = await User.create({ name: userName, socketId: socket.id });
                 room.users.push(createdUser);
                 await room.save();
-                io.to(room.url).emit('setUsers', room.users)
+                socket.emit('SERVER:ALLOW_JOIN', { roomId, userName })
+                io.to(room.roomId).emit('SERVER:SET_USERS', room.users);
             } else {
-                socket.emit('alreadyTaken')
+                socket.emit('SERVER:USER_EXISTS')
             }
         }
     });
-    socket.on('message', async ({roomId, from, text}) => {
-        const time = Date.now();
+    socket.on('NEW_MESSAGE', async ({ roomId, userName, text }) => {
+        const time = new Date();
         const obj = {
-            from,
-            time,
+            userName,
+            time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
             text
         };
-        socket.broadcast.to(roomId).emit('message', obj)
+        socket.broadcast.to(roomId).emit('SERVER:ADD_MESSAGE', obj);
     })
     socket.on('disconnect', async () => {
         console.log('bye bye')
