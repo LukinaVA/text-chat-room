@@ -31,14 +31,17 @@ const JoinPage = ({onJoin}) => {
             <h1 className='join-page__title'>Welcome to Chat Room</h1>
             <label htmlFor='userName' className='join-page__label'>Enter your name: </label>
             <input
+                autoFocus
                 id='userName'
                 className='join-page__user-name'
                 type='text'
+                maxLength='20'
                 placeholder='Name'
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                onKeyDown={(e) => e.code === 'Enter' && joinNewChat()}
             />
-            <button className='join-page__bth' onClick={joinNewChat}>Join New Chat Room</button>
+            <button className='join-page__bth btn' onClick={joinNewChat}>Join New Chat Room</button>
         </div>
     );
 }

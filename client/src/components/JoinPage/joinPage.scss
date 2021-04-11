@@ -11,8 +11,6 @@
   justify-content: center;
 
   padding: 1.5rem;
-
-
   box-shadow: 0 0 1rem rgba(0, 0, 0, .3);
 }
 
@@ -37,19 +35,4 @@
 
   font-family: inherit;
   color: inherit;
-}
-
-.join-page__bth {
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #fff;
-
-  border-radius: 1rem;
-  background-color: $blue;
-  cursor: pointer;
-
-  transition: background-color .1s linear 0s;
-  &:hover {
-    background-color: $dark-blue;
-  }
 }

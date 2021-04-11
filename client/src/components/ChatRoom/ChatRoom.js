@@ -1,23 +1,32 @@
-import React, {useEffect} from 'react';
+import React, {useRef, useEffect} from 'react';
 import socket from '../../socket';
+
+import './chatRoom.scss';
 
 const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
     const [messageValue, setMessageValue] = React.useState('');
+    const messagesRef = useRef(null);
 
-    // useEffect(() => {
-    //     socket.on('message', (message) => {
-    //         addMessage(message);
-    //     });
-    // }, []);
+    useEffect(() => {
+        messagesRef.current.scrollTo(0, 99999);
+    }, [messages]);
 
     const sendMessage = () => {
-        const obj = {
+        const message = {
             roomId: getRoomId(),
             from: userName,
             text: messageValue
         };
         setMessageValue('');
-        socket.emit('message', obj)
+        socket.emit('message', message);
+
+        const time = new Date();
+        const my_message = {
+            from: 'Me',
+            time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
+            text: messageValue
+        };
+        addMessage(my_message);
     };
 
     const getRoomId = () => {
@@ -32,36 +41,43 @@ const ChatRoom = ({userName, users, messages, roomId, addMessage}) => {
 
     return (
         <div className='chat-room'>
-            <input className='chat-room__link' value={'http://' + document.location.host + '/rooms/' + getRoomId()}/>
-            <button onClick={copyLink}>Copy invite link</button>
+
             <div className='chat-room__users'>
-                Online ({users.length}):
-                <ul>
+                <span className='chat-room__num'>Online ({users.length})</span>
+                <ul className='chat-room__list'>
                     {users.map(({name, index}) => (
                         <li key={name + index}>{name}</li>
                     ))}
                 </ul>
+                <div className='chat-room__join'>
+                    <input className='chat-room__link' value={'http://' + document.location.host + '/rooms/' + getRoomId()}/>
+                    <button onClick={copyLink} className='chat-room__btn btn'>Copy invite link</button>
+                </div>
             </div>
+
             <div className='chat-room__messenger messenger'>
-                <div className='messenger__messages'>
+                <div ref={messagesRef} className='messenger__messages'>
                     {messages.map((message) => (
-                        <div className='messenger__message message'>
+                        <div className={message.from === 'Me' ? 'message message_mine' : 'message'}>
                             <div className='message__text'>
                                 {message.text}
                             </div>
                             <div className='message__info'>
-                                {message.from} {message.time}
+                                From: {message.from} {message.time}
                             </div>
                         </div>
                     ))}
                 </div>
                 <form className='messenger__new-message'>
                     <textarea
-                        onChange={(e) => setMessageValue(e.target.value)}
+                        autoFocus
+                        className='messenger__textarea'
                         value={messageValue}
+                        onChange={(e) => setMessageValue(e.target.value)}
+                        onKeyDown={(e) => e.code === 'Enter' && sendMessage()}
                         rows='3'
                     />
-                    <button onClick={sendMessage} type='button'>Send</button>
+                    <button className='messenger__btn btn' onClick={sendMessage} type='button'>Send Message</button>
                 </form>
             </div>
         </div>
