@@ -1,4 +1,5 @@
 const Room = require('../models/Room')
+const User = require('../models/User')
 
 module.exports = (io) => {
     const onJoinRoom = async function ({roomId, userName}) {
