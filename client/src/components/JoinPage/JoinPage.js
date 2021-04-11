@@ -22,7 +22,7 @@ const JoinPage = () => {
             roomId
         };
 
-        socket.emit('ROOM_JOIN', obj);
+        socket.emit('JOIN__ROOM', obj);
         setUserName('');
     };
 

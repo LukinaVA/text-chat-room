@@ -23,7 +23,7 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
         const time = new Date();
         const my_message = {
             from: 'Me',
-            time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
+            time: `${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }`,
             text: messageValue
         };
         addMessage(my_message);
@@ -43,29 +43,29 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
     return (
         <div className='chat-room'>
             <div className='chat-room__users'>
-                <span className='chat-room__num'>Online ({users.length})</span>
+                <span className='chat-room__num'>Online ({ users.length })</span>
                 <ul className='chat-room__list'>
-                    {users.map(({name, index}) => (
-                        <li key={name + index}>{name}</li>
+                    {users.map(({ name, index }) => (
+                        <li key={ name + index }>{ name === userName ? 'Me' : name }</li>
                     ))}
                 </ul>
                 <div className='chat-room__join'>
                     <input
                         className='chat-room__link'
-                        value={'http://' + document.location.host + '/rooms/' + getRoomId()}
+                        value={ 'http://' + document.location.host + '/rooms/' + getRoomId() }
                     />
-                    <button onClick={copyLink} className='chat-room__btn btn'>Copy invite link</button>
+                    <button onClick={ copyLink } className='chat-room__btn btn'>Copy invite link</button>
                 </div>
             </div>
             <div className='chat-room__messenger messenger'>
-                <div ref={messagesRef} className='messenger__messages'>
+                <div ref={ messagesRef } className='messenger__messages'>
                     {messages.map((message) => (
-                        <div className={message.from === 'Me' ? 'message message_mine' : 'message'}>
+                        <div className={ message.from === 'Me' ? 'message message_mine' : 'message' }>
                             <div className='message__text'>
-                                {message.text}
+                                { message.text }
                             </div>
                             <div className='message__info'>
-                                From: {message.from} {message.time}
+                                From: { message.from } { message.time }
                             </div>
                         </div>
                     ))}
@@ -73,13 +73,13 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
                 <form className='messenger__new-message'>
                     <textarea
                         autoFocus
-                        value={messageValue}
+                        value={ messageValue }
                         className='messenger__textarea'
-                        onChange={(e) => setMessageValue(e.target.value)}
-                        onKeyDown={(e) => e.code === 'Enter' && sendMessage()}
+                        onChange={ (e) => setMessageValue(e.target.value) }
+                        onKeyDown={ (e) => e.code === 'Enter' && sendMessage() }
                         rows='3'
                     />
-                    <button className='messenger__btn btn' onClick={sendMessage} type='button'>Send Message</button>
+                    <button className='messenger__btn btn' onClick={ sendMessage } type='button'>Send Message</button>
                 </form>
             </div>
         </div>

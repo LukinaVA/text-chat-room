@@ -1,5 +1,5 @@
-import React, {useReducer, useEffect} from 'react';
-import {Route, Switch} from 'react-router';
+import React, { useReducer, useEffect } from 'react';
+import { Route, Switch } from 'react-router';
 
 import reducer from './reducer';
 import JoinPage from './components/JoinPage/JoinPage';
@@ -10,7 +10,7 @@ import socket from './socket';
 import './styles.scss';
 
 function App() {
-    const [appState, dispatch] = useReducer(reducer, {
+    const [ appState, dispatch ] = useReducer(reducer, {
         joined: false,
         roomId: null,
         userName: null,
