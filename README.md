@@ -15,7 +15,7 @@ Server
 * Node.js
 * Express  
 * Socket.io
-* Mongodb
+* Mongoose
 
 Client
 * React JS
