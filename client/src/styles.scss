@@ -37,7 +37,8 @@ html {
 }
 
 .btn {
-  padding: 1rem;
+  padding: 1rem .5rem;
+  min-width: 13rem;
 
   font-family: inherit;
   font-weight: 700;

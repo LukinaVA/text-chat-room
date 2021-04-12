@@ -1,5 +1,5 @@
-import React, {useReducer, useEffect} from 'react';
-import {Route, Switch} from 'react-router';
+import React, { useReducer, useEffect } from 'react';
+import { Route, Switch } from 'react-router';
 
 import reducer from './reducer';
 import JoinPage from './components/JoinPage/JoinPage';
@@ -8,6 +8,7 @@ import ChatRoom from './components/ChatRoom/ChatRoom';
 import socket from './socket';
 
 import './styles.scss';
+import VideoChat from './components/VideoChat/VideoChat';
 
 function App() {
     const [appState, dispatch] = useReducer(reducer, {
@@ -52,11 +53,12 @@ function App() {
     return (
         <div className='app'>
             <Switch>
+                <Route path='/rooms/video/' component={ VideoChat }/>
                 <Route path='/' render={() => {
                     return !appState.joined ? (
                         <JoinPage/>
                     ) : (
-                        <ChatRoom {...appState} addMessage={addMessage}/>
+                        <ChatRoom { ...appState } addMessage={ addMessage }/>
                     );
                 }}/>
             </Switch>

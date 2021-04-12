@@ -1,0 +1,16 @@
+.video-chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-chat__header {
+  flex: 0 0 auto;
+}
+
+.video-chat__content {
+  flex: 1 0 auto;
+}
+
+.video-chat__footer {
+  flex: 0 0 auto;
+}

@@ -40,7 +40,7 @@
 .chat-room__list,
 .messenger__messages {
   flex: 1 0 auto;
-  height: 70vh;
+  height: 60vh;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -60,6 +60,7 @@
 
 .chat-room__join {
   flex: 0 0 auto;
+  display: flex;
 }
 
 .chat-room__link {

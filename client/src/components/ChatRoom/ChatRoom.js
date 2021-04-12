@@ -41,8 +41,13 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
             (document.location.pathname.split('/')[2]);
     };
 
-    const copyLink = () => {
-        document.querySelector('.chat-room__link').select();
+    const copyLink = (e) => {
+        const btns = document.querySelectorAll('.chat-room__btn');
+        if (e.target === btns[0]) {
+            document.querySelectorAll('.chat-room__link')[0].select();
+        } else {
+            document.querySelectorAll('.chat-room__link')[1].select();
+        }
         document.execCommand('copy');
     };
 
@@ -70,7 +75,15 @@ const ChatRoom = ({ userName, users, messages, roomId, addMessage }) => {
                         className='chat-room__link'
                         value={ 'http://' + document.location.host + '/rooms/' + getRoomId() }
                     />
-                    <button onClick={ copyLink } className='chat-room__btn btn'>Copy invite link</button>
+                    <button onClick={ copyLink } className='chat-room__btn btn'>Copy Invite Link</button>
+                </div>
+                <div className='chat-room__join'>
+                    <input
+                        readOnly
+                        className='chat-room__link'
+                        value={ 'http://' + document.location.host + '/rooms/video/' + getRoomId() }
+                    />
+                    <button onClick={ copyLink } className='chat-room__btn btn'>Copy VideoChat Link</button>
                 </div>
             </div>
             <div className='chat-room__messenger messenger'>
